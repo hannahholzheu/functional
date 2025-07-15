@@ -1,0 +1,30 @@
+# Clojure / Leiningen / deps.edn
+/.cpcache/
+/target/
+/out/
+*/.clj-kondo/*
+
+# Editor / IDE
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+
+# VSCode
+.vscode/
+
+# IntelliJ / Cursive
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Dependency directories
+node_modules/
