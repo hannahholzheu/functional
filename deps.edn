@@ -6,6 +6,6 @@
          org.apache.opennlp/opennlp-tools {:mvn/version "1.9.4"}}
  :aliases
  {:test {:extra-paths ["test"]
-         :extra-deps  {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "b3fd0d2"}}}}
-
+         :extra-deps  {lambdaisland/kaocha {:mvn/version "1.88.1376"}}
+         :main-opts   ["-m" "kaocha.runner"]}}
  }

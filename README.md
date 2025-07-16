@@ -17,8 +17,14 @@ Run:
 clj -M -m text-distance.core Text1 Text2
 ```
 
+## Run Test
+Run the tests with the following command:
+```bash
+clojure -M:test
+```
+
 
 ## Authors
-Hannah Holzheu
-Lara Blersch
-Lukas Karsch
+- Hannah Holzheu
+- Lara Blersch
+- Lukas Karsch
