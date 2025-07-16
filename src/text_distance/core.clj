@@ -11,8 +11,11 @@
         vectorizer  (vec/tfidf [tokens1 tokens2])
         vec1        (vectorizer tokens1)
         vec2        (vectorizer tokens2)]
-    {:cosine  (dist/cosine-sim vec1 vec2)
-     :jaccard (dist/jaccard tokens1 tokens2)}))
+    {:cosine            (dist/cosine-sim vec1 vec2)
+     :jaccard           (dist/jaccard tokens1 tokens2)
+     :sorensen-dice     (dist/sorensen-dice tokens1 tokens2)
+     :levenshtein       (dist/levenshtein text1 text2)
+   }))
 
 ; CLI entry point
 (defn -main [& args]
