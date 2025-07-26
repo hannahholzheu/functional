@@ -1,6 +1,4 @@
-; helper functions
-
-(ns text-distance.utils
+(ns nlp.utils.utils
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]))
