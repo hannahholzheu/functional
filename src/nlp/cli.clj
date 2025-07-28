@@ -59,44 +59,41 @@
         (print-error "Distance requires a function name and two texts.")
         (let [[func text1 text2 & more] arguments]
           (case func
+            ;; String-based distances - no preprocessing needed
             "levenshtein" (println (distance/levenshtein text1 text2))
-            "manhattan" (println (distance/manhattan-distance
-                                  (first (vals ((vectorize/tf-idf [(tokenize/tokenize text1)]) (tokenize/tokenize text1))))
-                                  (first (vals ((vectorize/tf-idf [(tokenize/tokenize text2)]) (tokenize/tokenize text2))))))
-            "euclidean" (println (distance/euclidean-distance
-                                  (first (vals ((vectorize/tf-idf [(tokenize/tokenize text1)]) (tokenize/tokenize text1))))
-                                  (first (vals ((vectorize/tf-idf [(tokenize/tokenize text2)]) (tokenize/tokenize text2))))))
             "hamming" (println (distance/hamming-distance text1 text2))
-            "chebyshev" (println (distance/chebyshev-distance
-                                  (first (vals ((vectorize/tf-idf [(tokenize/tokenize text1)]) (tokenize/tokenize text1))))
-                                  (first (vals ((vectorize/tf-idf [(tokenize/tokenize text2)]) (tokenize/tokenize text2))))))
-            "minkowski" (if (empty? more)
-                          (print-error "Minkowski distance requires an order parameter as well.")
-                          (println (distance/minkowski-distance
-                                    (first (vals ((vectorize/tf-idf [(tokenize/tokenize text1)]) (tokenize/tokenize text1))))
-                                    (first (vals ((vectorize/tf-idf [(tokenize/tokenize text2)]) (tokenize/tokenize text2))))
-                                    (read-string (first more)))))
-            "canberra" (println (distance/canberra-distance
-                                 (first (vals ((vectorize/tf-idf [(tokenize/tokenize text1)]) (tokenize/tokenize text1))))
-                                 (first (vals ((vectorize/tf-idf [(tokenize/tokenize text2)]) (tokenize/tokenize text2))))))
             "normalized-levenshtein" (println (distance/normalized-levenshtein text1 text2))
-            (print-error (str "Unknown distance function: " func)))))
 
-      (:similarity options)
-      (if (< (count arguments) 3)
-        (print-error "Similarity requires a function name and two texts.")
-        (let [[func text1 text2] arguments]
-          (case func
-            "cosine" (println (similarity/cosine-sim
-                               (first (vals ((vectorize/tf-idf [(tokenize/tokenize text1)]) (tokenize/tokenize text1))))
-                               (first (vals ((vectorize/tf-idf [(tokenize/tokenize text2)]) (tokenize/tokenize text2))))))
-            "jaccard" (println (similarity/jaccard (tokenize/tokenize text1) (tokenize/tokenize text2)))
-            "sorensen-dice" (println (similarity/sorensen-dice (tokenize/tokenize text1) (tokenize/tokenize text2)))
-            "overlap-coefficient" (println (similarity/overlap-coefficient (tokenize/tokenize text1) (tokenize/tokenize text2)))
-            "dice-coefficient" (println (similarity/dice-coefficient
-                                         (vectorize/term-frequency (tokenize/tokenize text1))
-                                         (vectorize/term-frequency (tokenize/tokenize text2))))
-            (print-error (str "Unknown similarity function: " func)))))
+            ;; Vector-based distances - need preprocessing and vectorization
+            ("manhattan" "euclidean" "chebyshev" "canberra" "minkowski")
+            (let [;; Preprocess both texts first
+                  preprocessed1 (preprocess/preprocess text1)
+                  preprocessed2 (preprocess/preprocess text2)
+                  ;; Create a corpus with BOTH preprocessed documents
+                  corpus [preprocessed1 preprocessed2]
+                  ;; Create TF-IDF vectorizer from the shared corpus
+                  tf-idf-fn (vectorize/tf-idf corpus)
+                  ;; Create vectors for each document using the SAME vectorizer
+                  vec1 (tf-idf-fn preprocessed1)
+                  vec2 (tf-idf-fn preprocessed2)] 
+
+              (case func
+                "manhattan" (println (distance/manhattan-distance vec1 vec2))
+                "euclidean" (println (distance/euclidean-distance vec1 vec2))
+                "chebyshev" (println (distance/chebyshev-distance vec1 vec2))
+                "canberra" (println (distance/canberra-distance vec1 vec2))
+                "minkowski" (if (empty? more)
+                              (print-error "Minkowski distance requires an order parameter.")
+                              (let [p (try
+                                        (Double/parseDouble (first more))
+                                        (catch NumberFormatException _
+                                          (print-error "Minkowski order parameter must be a number.")
+                                          nil))]
+                                (when p
+                                  (println (distance/minkowski-distance vec1 vec2 p)))))))
+
+            ;; Unknown function
+            (print-error (str "Unknown distance function: " func)))))
 
       (:classify options)
       (if (< (count arguments) 2)
@@ -155,4 +152,4 @@
         (println summary))
 
       :else
-      (print-error "Keine gültige Option angegeben. Benutze --help für Hilfe."))))
+      (print-error "No valid option provided. Use --help for help."))))

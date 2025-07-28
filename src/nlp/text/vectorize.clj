@@ -35,6 +35,7 @@
               (for [[term freq] tf]
                 [term (* freq (get idf-map term 0))]))))))
 
+
 (defn one-hot
   "Creates a presence vector mapping tokens to 1."
   [tokens]
