@@ -7,7 +7,7 @@
    [nlp.text.preprocess :as preprocess]))
 
 (defn extractive-summary
-  "Return top-N sentences most similar to document vector (centroid)."
+  "Return top-N sentences most similar to document vector (centroid). Based on TF-IDF"
   [text n]
   (let [sentences (tokenize/tokenize-sentences text)
         preprocessed_sentences (map preprocess/preprocess sentences)

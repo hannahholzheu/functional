@@ -4,7 +4,6 @@
    [clojure.tools.cli :as cli]
    [nlp.metrics.distance :as distance]
    [nlp.metrics.similarity :as similarity]
-   [nlp.models.classification :as classification]
    [nlp.models.clustering :as clustering]
    [nlp.models.spellcheck :as spellcheck]
    [nlp.models.summarize :as summarize]
@@ -160,11 +159,12 @@
       (:spellcheck options)
       (if (empty? arguments)
         (print-error "Spellcheck requires a word and optionally a dictionary.")
-        (let [[word & dictionary] arguments]
-          (println (spellcheck/correct-word word dictionary))))
+        ((let [[word & dict-args] arguments
+               dict-texts (map get-text dict-args)
+               dictionary (mapcat str/split-lines dict-texts)] ; mapcat = flatmap to flatten nested sequence 
+           (println (spellcheck/correct-word word dictionary)))))
 
       (:summarize options)
-      ;; does not support file inputs 
       (if (< (count arguments) 2)
         (print-error "Summarize requires a number of sentences and a text.")
         (let [[n-str & text-parts] arguments
@@ -177,7 +177,7 @@
           (when n
             (println (summarize/extractive-summary text n)))))
 
-      (not (empty? errors))
+      (seq errors)
       (do
         (doseq [e errors] (print-error e))
         (println summary))
