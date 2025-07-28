@@ -26,14 +26,15 @@
             [term (Math/log (/ N (+ 1 df)))]))))
 
 (defn tf-idf
-  "Returns a function that computes TF-IDF vectors for given tokens."
+  "Returns a function that computes full TF-IDF vectors for given tokens."
   [docs]
   (let [idf-map (inverse-document-frequency docs)]
     (fn [tokens]
       (let [tf (term-frequency tokens)]
         (into {}
-              (for [[term freq] tf]
-                [term (* freq (get idf-map term 0))]))))))
+              (for [[term idf] idf-map]
+                (let [freq (get tf term 0)]
+                  [term (* freq idf)])))))))
 
 
 (defn one-hot

@@ -2,9 +2,16 @@
   (:require [clojure.string :as str]))
 
 (defn tokenize
-  "Split text into tokens by whitespace."
+  "Splits a string into a sequence of lowercase tokens,
+   removing non-alphanumeric characters and splitting by whitespace.
+   Empty strings are removed from the final sequence."
   [text]
-  (str/split text #"\s+"))
+  (let [tokens (-> text
+                   str/lower-case
+                   (str/replace #"[^a-zA-Z0-9]+" " ")
+                   str/trim
+                   (str/split #"\s+"))]
+    (remove empty? tokens)))
 
 (defn ngrams
   "Generate ngrams (seqs of tokens) from tokens."
