@@ -36,9 +36,9 @@
   [v1 v2]
   (reduce
    (fn [acc k]
-     (+ acc (Math/abs (- (get v1 k 0) (get v2 k 0)))))
-   0
-   (clojure.set/union (set (keys v1)) (set (keys v2)))))
+     (+ acc (Math/abs (- (get v1 k 0) (get v2 k 0))))) ; reducer function: accumulates distance between the values in the vectors 
+   0 ; initial value 
+   (clojure.set/union (set (keys v1)) (set (keys v2))))) ; reduce on the union of the keys of both vectors 
 
 
 ;; Euclidean (L2) distance for sparse vector maps
@@ -49,16 +49,15 @@
    (reduce
     (fn [acc k]
       (let [diff (- (get v1 k 0) (get v2 k 0))]
-        (+ acc (* diff diff))))
-    0
-    (clojure.set/union (set (keys v1)) (set (keys v2)))))
-
+        (+ acc (* diff diff)))) ; squared distance 
+    0 ; initial value 
+    (clojure.set/union (set (keys v1)) (set (keys v2))))) ; reduce on the union of the keys of both vectors 
   )
 
 
 ;; Hamming distance for equal-length strings
 (defn hamming-distance
-  "Calculate Hamming distance between two strings of equal length."
+  "Calculate Hamming distance between two strings of equal length. Hamming distance is a measure that returns the amount of indexes at which the characters differ."
   [s1 s2]
   (if (not= (count s1) (count s2))
     (throw (ex-info "Strings must have equal length" {}))
@@ -66,17 +65,17 @@
 
 
 (defn chebyshev-distance
-  "Calculate Chebyshev (L∞) distance between two sparse vectors."
+  "Calculate Chebyshev (L∞) distance between two sparse vectors. The biggest difference between the numbers in the same spots of two vectors"
   [v1 v2]
   (reduce
-   (fn [max-diff k]
-     (max max-diff (Math/abs (- (get v1 k 0) (get v2 k 0)))))
+   (fn [max-diff k] ; max-diff = acc
+     (max max-diff (Math/abs (- (get v1 k 0) (get v2 k 0))))) ; keep track of largest distance between tokens 
    0
-   (clojure.set/union (set (keys v1)) (set (keys v2)))))
+   (clojure.set/union (set (keys v1)) (set (keys v2))))) ; reduce on the union of the keys of both vectors 
 
 
 (defn minkowski-distance
-  "Calculate Minkowski distance of order p between two sparse vectors."
+  "Calculate Minkowski distance of order p between two sparse vectors. Larger p = more influence of differences in a spot. Smaller p = care evenly about all differences in the vectors."
   [v1 v2 p]
   (Math/pow
    (reduce
@@ -88,18 +87,18 @@
 
 
 (defn canberra-distance
-  "Calculate Canberra distance between two sparse vectors."
+  "Calculate Canberra distance between two sparse vectors. Canberra distance is a weighted version of the Manhattan distance"
   [v1 v2]
   (reduce
    (fn [acc k]
      (let [x (get v1 k 0)
            y (get v2 k 0)
-           denom (+ (Math/abs x) (Math/abs y))]
+           denom (+ (Math/abs x) (Math/abs y))] ; denominator = |x| + |y|
        (if (zero? denom)
          acc
-         (+ acc (/ (Math/abs (- x y)) denom)))))
+         (+ acc (/ (Math/abs (- x y)) denom))))) ; acc + (|x -y|) : |x| + |y|
    0
-   (clojure.set/union (set (keys v1)) (set (keys v2)))))
+   (clojure.set/union (set (keys v1)) (set (keys v2))))) ; reduce on the union of the keys of both vectors 
 
 
 (defn normalized-levenshtein
@@ -110,7 +109,3 @@
     (if (zero? max-len)
       0
       (/ dist max-len))))
-
-
-
-
