@@ -137,19 +137,6 @@
             (print-error (str "Unknown distance function: " func)))))
 
 
-      (:classify options)
-      (if (< (count arguments) 2)
-        (print-error "Classify requires a model and a text.")
-        (let [[model-str text & more] arguments
-              model (try
-                      (read-string model-str)
-                      (catch Exception _
-                        (print-error "Invalid model format. Please provide a valid Clojure data structure.")
-                        nil))]
-          (when model
-            (let [text (get-text text)]
-              (println (classification/classify model (tokenize/tokenize text)))))))
-
       (:cluster options)
       (if (< (count arguments) 3)
         (print-error "Cluster requires k, iterations, and at least one text.")
