@@ -1,8 +1,8 @@
-# NLP - Text Distance Calculation
+# NLP - _functional_
 
-Calculate the distance of two texts.
+Implementations of NLP algorithms in [Clojure](https://clojure.org/), a functional programming language for the JVM. This project can be seen as a **libary** that offers its functions through an API. For convenience and demonstration purposes, a CLI enables direct access to most of the functions from your terminal.
 
-## Current functionalities
+## 📖 Current functionalities
 
 * Tokenize input text 
 * Preprocess text 
@@ -14,7 +14,7 @@ Calculate the distance of two texts.
 * Spellcheck words using Levenshtein distance and a dictionary 
 * Summarize text by returning sentences most relevant to the document (based on TF-IDF)
 
-## Installation
+## 📥 Installation
 
 Install the Clojure CLI, following the [documentation](https://clojure.org/guides/install_clojure).
 
@@ -24,11 +24,12 @@ git clone https://github.com/hannahholzheu/functional.git
 cd functional
 ```
 
-## Usage
+## ⚙️ CLI Usage
 
-Within a terminal, navigate to the project root directory.
+Within your terminal, navigate to the project root directory.
 
 Run:
+
 ```bash
 clj -M -m nlp.cli --help # display help 
 ```
@@ -41,14 +42,14 @@ Most of the functions support reading files as input instead of passing the text
 clj -M -m nlp.cli -f --<function> "file.txt" # works with relative and absolute paths 
 ```
 
-## Run Tests
+## ✔️ Run Tests
 
 Run the tests with the following command:
 ```bash
 clj -M:test
 ```
 
-## Authors
+## 👤 Authors
 - Hannah Holzheu
 - Lara Blersch
 - Lukas Karsch
