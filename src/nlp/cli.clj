@@ -173,7 +173,7 @@
                   (catch Exception _
                     (print-error "Invalid number for sentences.")
                     nil))
-              text (str/join " " text-parts)]
+              text (str/join " " (map get-text text-parts))]
           (when n
             (println (summarize/extractive-summary text n)))))
 
