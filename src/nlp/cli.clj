@@ -103,7 +103,7 @@
 
       (:similarity options)
       (if (< (count arguments) 3)
-        (print-error "Similarity requires a function name and two texts.")
+        (print-error "Similarity requires a function name and two texts. (Functions: 'cosine-sim', 'jaccard', 'sorensen-dice', 'overlap-coefficient', 'dice-coefficient')")
         (let [[func text1 text2] arguments
               text1 (get-text text1) text2 (get-text text2)]
           (case func
@@ -113,10 +113,7 @@
                   preprocessed2 (preprocess/preprocess text2)]
 
               (case func
-                "cosine-sim" (let [;; Preprocess both texts first
-                                   preprocessed1 (preprocess/preprocess text1)
-                                   preprocessed2 (preprocess/preprocess text2)
-                                   ;; vectorize 
+                "cosine-sim" (let [;; vectorize 
                                    vectorizer (vectorize/tf-idf [preprocessed1 preprocessed2])
                                    vec1 (vectorizer preprocessed1)
                                    vec2 (vectorizer preprocessed2)]
@@ -124,10 +121,7 @@
                 "jaccard" (println (similarity/jaccard preprocessed1 preprocessed2))
                 "sorensen-dice" (println (similarity/sorensen-dice preprocessed1 preprocessed2))
                 "overlap-coefficient" (println (similarity/overlap-coefficient preprocessed1 preprocessed2))
-                "dice-coefficient" (let [;; Preprocess both texts first
-                                         preprocessed1 (preprocess/preprocess text1)
-                                         preprocessed2 (preprocess/preprocess text2)
-                                         ;; vectorize 
+                "dice-coefficient" (let [;; vectorize 
                                          vectorizer (vectorize/tf-idf [preprocessed1 preprocessed2])
                                          vec1 (vectorizer preprocessed1)
                                          vec2 (vectorizer preprocessed2)]
